@@ -29,7 +29,7 @@ const template = {
     Project Address: {Project Address}<br>
     Status: {Status}<br>
     Status Date: {Status Date}
-    GEOCODE: {GEOCODE}<br>
+    GEOCODE: {GEOCODE}<br>`
 };
 
 const renderer = {
