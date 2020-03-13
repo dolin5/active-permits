@@ -1,6 +1,6 @@
 <html>
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
@@ -14,12 +14,47 @@
 
     <style>
       html,
-      body,
-      #viewDiv {
+      body {
         padding: 0;
         margin: 0;
         height: 100%;
         width: 100%;
+      } 
+      #viewDiv {
+        float: left;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 80%;
+      }
+      #feature-node {
+        float: left;
+        width: 20%;
+        height: 100%;
+        padding: 1em 0 1em 1em;
+        display: flex;
+        flex-direction: column;
+      }
+      #title {
+        margin-bottom: 25px;
+        padding-right: 1em;
+        font-size: xx-large;
+      }
+      #active-permit-count {
+        padding: 20px;
+        font-size: 100px;
+        text-align: center;
+        color:rgba(230, 76, 0);
+      }
+      #active-permit-list {
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        list-style: none;
+      }
+      #active-permit-list li {
+        padding:5px;
       }
     </style>
 
@@ -27,77 +62,28 @@
       rel="stylesheet"
       href="https://js.arcgis.com/4.14/esri/themes/light/main.css"
     />
-    <script src="https://js.arcgis.com/4.14/"></script>
-
     <script>
-      require([
-        "esri/Map",
-        "esri/layers/GeoJSONLayer",
-        "esri/views/MapView"
-      ], function(Map, GeoJSONLayer, MapView) {
-        // If GeoJSON files are not on the same domain as your website, a CORS enabled server
-        // or a proxy is required.
-        const url =
-          "http://planning-permit-db.herokuapp.com/get-active-permits-layer";
-
-        // Paste the url into a browser's address bar to download and view the attributes
-        // in the GeoJSON file. These attributes include:
-        // * mag - magnitude
-        // * type - earthquake or other event such as nuclear test
-        // * place - location of the event
-        // * time - the time of the event
-        // Use the Arcade Date() function to format time field into a human-readable format
-
-        const template = {
-          title: "{Permit Title}",
-          content: `GEOCODE: {GEOCODE}<br>
-Project ID: {Project ID}<br>
-Location ID: {Location ID}<br>
-Template name: {Template name}<br>
-Permit Number: {Permit Number}<br>
-Permit Title: {Permit Title}<br>
-Permit Description: {Permit Description}<br>
-Project Address: {Project Address}<br>
-Status: {Status}<br>
-Status Date: {Status Date}`
-        };
-
-        const renderer = {
-          type: "simple",
-          symbol: {
-            type: "simple-fill",
-            outline: { width: 1.25, color: [255, 85, 0, 1] },
-            color: [230, 76, 0, 0.25]
+      var locationPath = location.pathname.replace(/\/[^/]*$/, "");
+      window.dojoConfig = {
+        packages: [
+          {
+            name: "app",
+            location: locationPath + "/app"
           }
-        };
-
-        const geojsonLayer = new GeoJSONLayer({
-          url: url,
-          popupTemplate: template,
-          renderer: renderer //optional
-        });
-        
-        
-        const map = new Map({
-          basemap: "gray",
-          layers: [geojsonLayer]
-        });
-
-        const view = new MapView({
-          container: "viewDiv",
-          center: [-111, 45.7],
-          zoom: 12,
-          map: map
-        });
-        geojsonLayer.when(()=>{
-          view.goTo(geojsonLayer.fullExtent);
-        })
-
-      });
+        ]
+      };
+    </script>
+    <script src="https://js.arcgis.com/4.14/"></script> 
     </script>
   </head>
 
   <body>
-    <div id="viewDiv"></div>
+    <div id="feature-node" class="esri-widget">
+      <div id="title">Active Permits</div>
+      <div id="active-permit-count"></div>
+      <ul id="active-permit-list"></ul>      
+    </div>
+    <div id="viewDiv"></div>    
+    <script>require(["app/main"]);</script>
   </body>
 </html>
